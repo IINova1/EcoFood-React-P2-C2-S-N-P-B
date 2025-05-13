@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Comentarios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        body {
+            background: #f0fdf4;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .comentario-card {
+            border-left: 5px solid #16a34a;
+            transition: all 0.3s ease;
+        }
+
+        .comentario-card:hover {
+            background-color: #e6f4ea;
+            transform: scale(1.01);
+        }
+
+        .fadeInCustom {
+            animation: fadeIn 0.8s;
+        }
+
+        .d-none {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-success mb-4 animate__animated animate__fadeInDown">💬 Comentarios de la Comunidad</h1>
+
+        <div id="feedback" class="alert alert-danger d-none" role="alert"></div>
+
+        <form id="comentarioForm" class="mb-4">
+            <div class="mb-3">
+                <input type="text" id="nombre" class="form-control" placeholder="Tu nombre (opcional)">
+            </div>
+            <div class="mb-3">
+                <textarea id="comentario" class="form-control" rows="3" placeholder="Tu comentario..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success shadow">Publicar Comentario</button>
+        </form>
+
+        <div id="comentariosGuardados" class="mb-4">
+            <h3 class="mb-3">📝 Comentarios publicados:</h3>
+        </div>
+
+        <button id="borrarComentarios" class="btn btn-outline-danger">🗑 Borrar todos los comentarios</button>
+        <div class="mt-4">
+            <a href="index.html" class="btn btn-secondary">← Volver al inicio</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("comentarioForm");
+        const nombreInput = document.getElementById("nombre");
+        const comentarioInput = document.getElementById("comentario");
+        const zonaComentarios = document.getElementById("comentariosGuardados");
+        const borrarBtn = document.getElementById("borrarComentarios");
+        const feedback = document.getElementById("feedback");
+
+        function mostrarFeedback(msg, tipo = "danger") {
+            feedback.textContent = msg;
+            feedback.className = `alert alert-${tipo}`;
+            feedback.classList.remove("d-none");
+            setTimeout(() => feedback.classList.add("d-none"), 3000);
+        }
+
+        function crearComentarioCard({ nombre, comentario, fecha }) {
+            const card = document.createElement("div");
+            card.className = "card comentario-card mb-3 animate__animated animate__fadeInUp";
+            card.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title mb-1">${nombre}</h5>
+                    <small class="text-muted">${fecha}</small>
+                    <p class="card-text mt-2 mb-0">• ${comentario}</p>
+                </div>
+            `;
+            return card;
+        }
+
+        function cargarComentarios() {
+            zonaComentarios.innerHTML = "<h3 class='mb-3'>📝 Comentarios publicados:</h3>";
+            let comentarios = JSON.parse(localStorage.getItem("comentariosEcoFood")) || [];
+
+            comentarios = comentarios.map(com => {
+                if (typeof com === "string") {
+                    return {
+                        nombre: "Anónimo 🤖",
+                        comentario: com,
+                        fecha: "Fecha desconocida"
+                    };
+                }
+                return com;
+            });
+
+            if (comentarios.length === 0) {
+                zonaComentarios.innerHTML += "<p class='text-muted'>Aún no hay comentarios.</p>";
+                return;
+            }
+
+            comentarios.forEach(com => {
+                const card = crearComentarioCard(com);
+                zonaComentarios.appendChild(card);
+            });
+        }
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const nombre = nombreInput.value.trim() || "Anónimo 🤖";
+            const comentario = comentarioInput.value.trim();
+            const fecha = new Date().toLocaleString("es-CL");
+
+            if (!comentario) {
+                mostrarFeedback("Por favor, escribe un comentario.");
+                return;
+            }
+
+            let comentarios = JSON.parse(localStorage.getItem("comentariosEcoFood")) || [];
+
+            const ultimo = comentarios[comentarios.length - 1];
+            const ultimoTexto = typeof ultimo === "string" ? ultimo : ultimo?.comentario;
+            if (comentario === ultimoTexto) {
+                mostrarFeedback("Este comentario ya fue publicado.");
+                return;
+            }
+
+            const nuevo = { nombre, comentario, fecha };
+            comentarios.push(nuevo);
+            localStorage.setItem("comentariosEcoFood", JSON.stringify(comentarios));
+
+            const nuevaCard = crearComentarioCard(nuevo);
+            zonaComentarios.appendChild(nuevaCard);
+            comentarioInput.value = "";
+            nombreInput.value = "";
+        });
+
+        borrarBtn.addEventListener("click", () => {
+            if (confirm("¿Estás seguro de que quieres borrar todos los comentarios?")) {
+                localStorage.removeItem("comentariosEcoFood");
+                cargarComentarios();
+            }
+        });
+
+        cargarComentarios();
+    </script>
+</body>
+</html>

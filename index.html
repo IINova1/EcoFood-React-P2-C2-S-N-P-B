@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EcoFood</title>
+    <link rel="stylesheet" href="Css/styles.css">
+    <link rel="icon" type="image/png" href="Css/img/LOGO.png">
+
+</head>
+        <header>
+            <div class="container">
+                <p class="logo">EcoFood</p>
+                <nav>
+                    <div class="container">
+                        <a href="#somos-ecofood">Quienes Somos</a>
+                        <a href="#que-hacemos">Que Hacemos</a>
+                        <a href="#como-puedes-ayudar">Como Puedes Ayudar</a>
+                    </div>  
+                    <div class="nav-buttons">
+                        <button onclick="location.href='Comentarios.html'">Comentarios</button>
+                        <button onclick="location.href='contactos.html'">Contacto</button>
+                        <button onclick="location.href='Login.html'">Iniciar Sesión</button>
+                        
+                    </div>
+                </nav>
+            </div>
+        </header>
+    
+    <section id="hero">
+        <h1>EcoFood</h1>
+        <button onclick="window.location.href='Registro.html'" class="btn btn-success mt-3">¡Únete Ya!</button>
+    </section>
+
+    <section id="somos-ecofood">
+        <div class="container">
+            <div class="img-container"></div>
+            <div class="img-container-border"></div>
+            <div class="textoderecho">
+                <h2>Somos EcoFood</h2>
+                <p>Una organización comprometida con la reducción del desperdicio 
+                alimentario mediante iniciativas educativas, tecnológicas y prácticas cotidianas. Nuestro propósito es promover un mundo más justo y sostenible, 
+                empoderando a las personas y comunidades para optimizar el uso de alimentos, minimizar residuos y proteger nuestro planeta. <br>
+                <br>
+                Somos un equipo diverso formado por expertos en medio ambiente, tecnología y desarrollo comunitario, unidos por un propósito común: generar conciencia, 
+                educar y activar soluciones para enfrentar este desafío global.
+            </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="que-hacemos">
+        <div class="container">
+            <h2>Que Hacemos:</h2>
+            <div class="ayudantias">
+                <div class="cartas">
+                    <h3>Educamos</h3>
+                    <p>Ofrecemos materiales educativos gratuitos y talleres comunitarios para fomentar prácticas sostenibles en el consumo de alimentos.</p>
+                    <p class="extra-texto" style="display: none;">
+                        Además de proporcionar materiales educativos, organizamos eventos comunitarios donde compartimos prácticas alimentarias responsables y sostenibles. Estos talleres incluyen desde el cultivo de alimentos en espacios pequeños, hasta la conservación y aprovechamiento de productos en su totalidad, evitando el desperdicio. Enseñamos a las comunidades sobre la importancia de la alimentación consciente, cómo reducir el impacto ambiental de sus hábitos y cómo hacer uso eficiente de los recursos alimenticios disponibles. También brindamos herramientas digitales que permiten a los participantes acceder a guías y consejos prácticos sobre cómo aplicar estos conocimientos en su vida diaria. Creemos firmemente que una población bien informada es clave para transformar los hábitos de consumo hacia un futuro más sostenible.
+                    </p>
+                    <button onclick="toggleTexto(this)">+ INFO</button>
+                </div>
+                <div class="cartas">
+                    <h3>Conectamos</h3>
+                    <p>Promovemos alianzas entre productores, comerciantes, consumidores y comunidades para reducir excedentes y aprovechar al máximo los alimentos disponibles.</p>
+                    <p class="extra-texto" style="display: none;">
+                        Nuestra misión es crear redes de colaboración entre diferentes actores dentro de la cadena de suministro alimentario. Conectamos a agricultores locales con minoristas y consumidores para minimizar los excedentes de producción, evitando así el desperdicio de alimentos. Además, trabajamos en estrecha colaboración con ONGs y gobiernos para promover políticas públicas que favorezcan la redistribución de alimentos no vendidos a quienes más lo necesitan. Estas alianzas permiten mejorar la eficiencia en el uso de los recursos y generar un impacto positivo en las economías locales, reduciendo la huella de carbono asociada al transporte de productos y fomentando la solidaridad comunitaria. También promovemos el intercambio de buenas prácticas entre los participantes para mejorar continuamente los procesos de producción y distribución.
+                    </p>
+                    <button onclick="toggleTexto(this)">+ INFO</button>
+                </div>
+                <div class="cartas">
+                    <h3>Innovamos</h3>
+                    <p>Utilizamos la tecnología para desarrollar soluciones prácticas, como aplicaciones móviles, plataformas web y redes comunitarias que faciliten la reducción del desperdicio alimentario.</p>
+                    <p class="extra-texto" style="display: none;">
+                        Además de nuestras aplicaciones móviles y plataformas web, estamos desarrollando tecnologías innovadoras que permiten a los consumidores identificar fácilmente productos cercanos a su fecha de vencimiento, lo que les permite hacer compras más responsables. También estamos implementando sistemas de trazabilidad digital que permiten rastrear el origen de los productos alimenticios, asegurando que se usen de manera más eficiente. Nuestras redes comunitarias en línea facilitan la interacción entre productores, distribuidores y consumidores, promoviendo el intercambio de alimentos en lugar de su descarte. Mediante el uso de inteligencia artificial, estamos desarrollando algoritmos que predicen las necesidades de los mercados locales, ayudando a los productores a ajustar su oferta a la demanda real y reduciendo los excesos que terminan en la basura. Además, trabajamos con startups tecnológicas para crear soluciones basadas en blockchain que garanticen la transparencia en la distribución de alimentos y en el uso de recursos. Estas innovaciones no solo buscan reducir el desperdicio alimentario, sino también transformar la manera en que interactuamos con los alimentos, promoviendo la eficiencia y la sostenibilidad.
+                    </p>
+                    <button onclick="toggleTexto(this)">+ INFO</button>
+                </div>    
+            </div>
+        </div>
+    </section>
+    
+
+    <section id="datos-relevantes">
+        <div class="container">
+            <h2>¡Sabías Que!</h2>
+            <div class="movable-text">dato_bailable</div>
+            <div class="movable-text">dato_bailable</div>
+            <div class="movable-text">dato_bailable</div>
+        </div>
+        <script src="Js/funcionalidad.js"></script>
+    </section>
+    
+
+    <section id="como-puedes-ayudar">
+        <div class="container">
+            <h2>Como Puedes Ayudar</h2>
+            <li>Consume responsablemente: Planifica tus compras y utiliza alimentos de forma eficiente.</li>
+            <img src="Css/img/consumo-responsable.jpg" alt="" class="imagen1">
+            <li>Difunde conciencia: Comparte información sobre el impacto del desperdicio alimentario con tu comunidad.</li>
+            <img src="Css/img/desperdicio.jpg" alt="" class="imagen1">
+            <li>¡Apoya y compra los productos naturales siempre!</li>
+            <img src="Css/img/comidareal.avif" alt="" class="imagen1">
+        </div>
+    </section>
+
+    <section id="si-tienes-dudas-contactanos">
+        <div class="container">
+            <h2>¡Contactanos!</h2>
+                <button onclick="location.href='contactos.html'">Contacto</button>
+        </div>
+    <div class="container-derecha">
+        <h2>Preguntas Frecuentes</h2>
+        <button onclick="location.href='faq.html'">Preguntas</button>
+    </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+        <div class="footer-info">
+            <p><strong>Dirección:</strong> Villalobos 221, La Serena</p>
+            <p><strong>Email:</strong> ecofood@gmail.com</p>
+            <p><strong>Teléfono:</strong> +56 9 4433 1221</p>
+        </div>
+        <div class="footer-social">
+            <p><strong>Síguenos:</strong></p>
+            <a href="#" class="social-link">Facebook: EcoFood_oficial</a>
+            <a href="#" class="social-link">Instagram: @ecofood_oficial</a>
+            <a href="#" class="social-link">Twitter: @EcoFood_org</a>
+        </div>
+        </div>
+        <div class="footer-bottom">
+        <p>&copy; 2025 EcoFood. Todos los derechos reservados.</p>
+        </div>
+    </footer> 
+</body>
+</html>
