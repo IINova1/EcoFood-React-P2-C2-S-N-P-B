@@ -1,0 +1,152 @@
+/* Fondo y tipografía */
+body, #root {
+  background: #f0fdf4;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 0 15px;
+}
+
+/* Título */
+.title {
+  color: #16a34a;
+  margin-bottom: 1rem;
+  animation: fadeInDown 0.8s;
+}
+
+/* Tarjeta comentario */
+.comentarioCard {
+  border-left: 5px solid #16a34a;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.8s;
+}
+
+.comentarioCard:hover {
+  background-color: #e6f4ea;
+  transform: scale(1.01);
+}
+
+/* Nombre y fecha */
+.nombre {
+  margin: 0;
+  font-weight: 600;
+}
+
+.fecha {
+  font-size: 0.8rem;
+  color: gray;
+}
+
+/* Texto del comentario */
+.textoComentario {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Formulario */
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.input, .textarea {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #16a34a;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.botonPublicar {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(22,163,74,0.6);
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.botonPublicar:hover {
+  background-color: #13823f;
+}
+
+/* Botones extra */
+.botonBorrar, .botonVolver {
+  margin-right: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid #dc2626;
+  background-color: transparent;
+  color: #dc2626;
+  transition: background-color 0.3s ease;
+}
+
+.botonBorrar:hover {
+  background-color: #dc2626;
+  color: white;
+}
+
+.botonVolver {
+  border-color: #6b7280;
+  color: #6b7280;
+}
+
+.botonVolver:hover {
+  background-color: #6b7280;
+  color: white;
+}
+
+/* Alertas */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.alert-danger {
+  background-color: #f87171;
+  color: white;
+  display: none;
+}
+
+.alert-danger.show {
+  display: block;
+}
+
+/* Animaciones fadeIn - simples para simular animate.css */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

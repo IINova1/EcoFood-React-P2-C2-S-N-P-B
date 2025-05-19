@@ -1,0 +1,138 @@
+/* Comentarios.module.css */
+
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background-color: #f0fdf4;
+  padding: 1.5rem;
+  border-radius: 6px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title {
+  color: #16a34a;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  resize: vertical;
+  transition: border-color 0.3s;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #16a34a;
+  outline: none;
+}
+
+.botonPublicar {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 4px 6px rgba(22, 163, 74, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+.botonPublicar:hover {
+  background-color: #15803d;
+}
+
+.comentarioCard {
+  border-left: 5px solid #16a34a;
+  background-color: white;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.comentarioCard:hover {
+  background-color: #e6f4ea;
+  transform: scale(1.01);
+}
+
+.nombre {
+  margin: 0;
+  font-weight: 600;
+  color: #166534;
+}
+
+.fecha {
+  font-size: 0.8rem;
+  color: gray;
+}
+
+.textoComentario {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.alert {
+  padding: 0.7rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.alert-danger {
+  background-color: #dc2626;
+  color: white;
+}
+
+.alert-success {
+  background-color: #16a34a;
+  color: white;
+}
+
+.show {
+  opacity: 1;
+}
+
+.botonBorrar {
+  background-color: #dc2626;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 3px 5px rgba(220, 38, 38, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+.botonBorrar:hover {
+  background-color: #b91c1c;
+}
+
+.botonVolver {
+  background-color: #6b7280;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 3px 5px rgba(107, 114, 128, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+.botonVolver:hover {
+  background-color: #4b5563;
+}
