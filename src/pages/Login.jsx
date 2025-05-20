@@ -1,55 +1,39 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-signInWithEmailAndPassword,
-setPersistence,
-browserLocalPersistence
-} from "firebase/auth";
-import { auth } from "../services/firebase";
-import Swal from "sweetalert2";
-export default function Login() {
-const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
+import { useState } from 'react';
+import { auth } from '../services/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+
+function Login() {
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const [error, setError] = useState('');
 const navigate = useNavigate();
-const handleLogin = async (e) => {
-e.preventDefault();
-try {
-await setPersistence(auth, browserLocalPersistence);
-await signInWithEmailAndPassword(auth, email, password);
-Swal.fire("Bienvenido", "Has iniciado sesión correctamente", "success");
-navigate("/home");
-// eslint-disable-next-line no-unused-vars
-} catch (error) {
-Swal.fire("Error", "Credenciales incorrectas o fallo de red", "error");
-}
+
+const handleLogin = async e => {
+    e.preventDefault();
+    try {
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    if (!userCred.user.emailVerified) {
+        setError('Debes verificar tu correo antes de iniciar sesión.');
+        return;
+    }
+    navigate('/dashboard');
+    } catch (err) {
+    setError('Credenciales inválidas o error de conexión.');
+    }
 };
+
 return (
-<div className="container mt-5">
-<h2>Iniciar Sesión</h2>
-<form onSubmit={handleLogin}>
-<div className="mb-3">
-<label className="form-label">Correo Electrónico</label>
-<input
-type="email"
-className="form-control"
-value={email}
-onChange={(e) => setEmail(e.target.value)}
-required
-/>
-</div>
-<div className="mb-3">
-<label className="form-label">Contraseña</label>
-<input
-type="password"
-className="form-control"
-value={password}
-onChange={(e) => setPassword(e.target.value)}
-required
-/>
-</div>
-<button type="submit" className="btn btn-primary">Iniciar
-Sesión</button>
-</form>
-</div>
+    <div className="container mt-4">
+    <h2>Iniciar Sesión</h2>
+    <form onSubmit={handleLogin}>
+        <input className="form-control mb-2" type="email" placeholder="Correo" onChange={e => setEmail(e.target.value)} required />
+        <input className="form-control mb-2" type="password" placeholder="Contraseña" onChange={e => setPassword(e.target.value)} required />
+        <button className="btn btn-success">Ingresar</button>
+    </form>
+    <p className="text-danger mt-3">{error}</p>
+    </div>
 );
 }
+
+export default Login;
