@@ -17,7 +17,7 @@ const handleLogin = async e => {
         setError('Debes verificar tu correo antes de iniciar sesión.');
         return;
     }
-    navigate('/dashboard');
+    navigate('/home');
     } catch (err) {
     setError('Credenciales inválidas o error de conexión.');
     }
