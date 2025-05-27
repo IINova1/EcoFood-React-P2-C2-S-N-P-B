@@ -1,13 +1,14 @@
 // src/components/admin/AdminForm.jsx
 import { useState } from 'react';
-import { db } from '../../firebase/config';
+import { db } from '../../services/firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 
 const initialState = {
 nombre: '',
+contraseña:'',
 email: '',
 tipo: 'admin',
-  esPrincipal: false, // por defecto no es principal
+esPrincipal: false, // por defecto no es principal
 };
 
 export default function AdminForm({ adminEditando, setAdminEditando }) {

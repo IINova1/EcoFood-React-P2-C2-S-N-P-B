@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { auth, db } from '../services/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -39,12 +40,12 @@ const handleSubmit = async e => {
         direccion: form.direccion,
         comuna: form.comuna,
         telefono: form.telefono || '',
-        tipo: 'cliente'
+        tipo: 'cliente' // ⚠ importante: registrar como cliente
     });
 
-    setMensaje('Registro exitoso. Verifica tu correo antes de iniciar sesión.');
+    setMensaje('✅ Registro exitoso. Verifica tu correo antes de iniciar sesión.');
     } catch (error) {
-    setMensaje(`Error: ${error.message}`);
+    setMensaje(`❌ Error: ${error.message}`);
     }
 };
 
@@ -58,9 +59,18 @@ return (
         <input className="form-control mb-2" name="direccion" placeholder="Dirección" onChange={handleChange} required />
         <input className="form-control mb-2" name="comuna" placeholder="Comuna" onChange={handleChange} required />
         <input className="form-control mb-2" name="telefono" placeholder="Teléfono (opcional)" onChange={handleChange} />
-        <button className="btn btn-success" type="submit">Registrarse</button>
+        <button className="btn btn-success w-100" type="submit">Registrarse</button>
     </form>
-    <p className="mt-3">{mensaje}</p>
+
+      {/* ✅ Mensaje informativo */}
+    <p className="mt-3 text-info">{mensaje}</p>
+
+      {/* ✅ Enlaces de navegación */}
+    <div className="mt-4 text-center">
+        <p>¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link></p>
+        <p>¿Eres una empresa? <Link to="/registro/empresa">Regístrate como empresa</Link></p>
+        <p>¿Eres administrador (pruebas)? <Link to="/registro/admin">Regístrate como admin</Link></p>
+    </div>
     </div>
 );
 }

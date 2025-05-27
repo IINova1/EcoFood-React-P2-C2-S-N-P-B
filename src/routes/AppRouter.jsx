@@ -1,60 +1,52 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import Home from './pages/home';
-import Register from './pages/Register';
-import Login from './pages/Login'; // Asegúrate de tener este archivo
-import ProtectedRoute from './components/ProtectedRoute';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Páginas admin
+// Layouts y rutas protegidas
+import ProtectedByRole from './routes/ProtectedByRole';
+import AdminLayout from './components/admin/layout/AdminLayout';
+
+// Páginas públicas
+import Home from './pages/home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import RegistroEmpresa from './pages/RegistroEmpresa';
+import RegistroAdmin from './pages/RegistroAdmin';
+import Recuperar from './pages/Recuperar';
+
+// Páginas admin (subrutas)
 import DashboardAdmin from './pages/admin/DashboardAdmin';
 import EmpresasAdmin from './pages/admin/EmpresasAdmin';
 import ClientesAdmin from './pages/admin/ClientesAdmin';
 import AdministradoresAdmin from './pages/admin/AdministradoresAdmin';
 
-function AppRouter() {
+export default function AppRouter() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
+
         {/* Rutas públicas */}
         <Route path="/" element={<Home />} />
-        <Route path="/registro" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/registro" element={<Register />} />
+        <Route path="/registro/empresa" element={<RegistroEmpresa />} />
+        <Route path="/registro/admin" element={<RegistroAdmin />} />
+        <Route path="/recuperar" element={<Recuperar />} />
 
-        {/* Rutas protegidas para administradores */}
+        {/* Rutas protegidas para ADMIN */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute>
-              <DashboardAdmin />
-            </ProtectedRoute>
+            <ProtectedByRole allowed={["admin"]}>
+              <AdminLayout />
+            </ProtectedByRole>
           }
-        />
-        <Route
-          path="/admin/empresas"
-          element={
-            <ProtectedRoute>
-              <EmpresasAdmin />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/clientes"
-          element={
-            <ProtectedRoute>
-              <ClientesAdmin />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/administradores"
-          element={
-            <ProtectedRoute>
-              <AdministradoresAdmin />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route path="dashboard" element={<DashboardAdmin />} />
+          <Route path="empresas" element={<EmpresasAdmin />} />
+          <Route path="clientes" element={<ClientesAdmin />} />
+          <Route path="administradores" element={<AdministradoresAdmin />} />
+        </Route>
+
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
-
-export default AppRouter;

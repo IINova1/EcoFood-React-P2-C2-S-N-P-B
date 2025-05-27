@@ -1,7 +1,10 @@
 // src/components/admin/EmpresaForm.jsx
 import { useState } from 'react';
-import { db } from '../../firebase/config';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { doc, setDoc, addDoc, collection, updateDoc } from 'firebase/firestore';
+import { db, auth } from '../../services/firebase'; // <-- Agrega este import
+
 
 const initialState = {
 nombre: '',
@@ -14,6 +17,7 @@ telefono: '',
 
 export default function EmpresaForm({ empresaEditando, setEmpresaEditando }) {
 const [empresa, setEmpresa] = useState(initialState);
+const [mensaje, setMensaje] = useState(''); // <-- Agrega esta línea
 
   // Si hay una empresa para editar, se carga en el formulario
 useState(() => {
@@ -39,11 +43,39 @@ const handleSubmit = async (e) => {
         await addDoc(collection(db, 'empresas'), empresa);
     }
 
+    try {
+    const userCred = await createUserWithEmailAndPassword(auth, form.email, form.password);
+    await sendEmailVerification(userCred.user);
+
+    await setDoc(doc(db, 'usuarios', userCred.user.uid), {
+        nombre: form.nombre,
+        rut: form.rut,
+        direccion: form.direccion,
+        comuna: form.comuna,
+        email: form.email,
+        telefono: form.telefono || '',
+        tipo: 'empresa' // ⚠ importante: registrar como cliente
+    });
+
+    setMensaje('✅ Registro exitoso. Verifica tu correo antes de iniciar sesión.');
+    } catch (error) {
+    setMensaje(`❌ Error: ${error.message}`);
+    }
+
+    
     setEmpresa(initialState);
     } catch (error) {
     console.error('Error al guardar empresa:', error);
     }
 };
+
+<form onSubmit={handleSubmit}>
+    {/* ...inputs... */}
+    <button type="submit">
+        {empresaEditando ? 'Actualizar Empresa' : 'Agregar Empresa'}
+    </button>
+    <p className="mt-3 text-info">{mensaje}</p> {/* Muestra el mensaje */}
+</form>
 
 return (
     <form onSubmit={handleSubmit}>
