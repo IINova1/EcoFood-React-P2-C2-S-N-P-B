@@ -1,5 +1,5 @@
 // src/services/userService.js
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, query, where, deleteDoc } from "firebase/firestore";
 import { db } from "./firebase";
 /**
 * Obtiene los datos del usuario desde Firestore
@@ -31,4 +31,16 @@ await setDoc(doc(db, "usuarios", uid), data);
 console.error("Error al guardar usuario:", error);
 throw error;
 }
+};
+
+export const getAdmins = async () => {
+const q = query(collection(db, "usuarios"), where("tipo", "==", "admin"));
+const snapshot = await getDocs(q);
+return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+
+export const deleteAdmin = async (id) => {
+const ref = doc(db, "usuarios", id);
+await deleteDoc(ref);
 };
