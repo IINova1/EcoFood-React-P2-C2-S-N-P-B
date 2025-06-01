@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore';
-import { db } from '../services/firebase';
-import '../ClientesAdmin.css';
+import { db } from "../../services/firebase";
+
 
 const ClientesAdmin = () => {
 const [clientes, setClientes] = useState([]);

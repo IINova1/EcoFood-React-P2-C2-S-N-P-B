@@ -1,20 +1,21 @@
 // src/components/admin/AdminForm.jsx
-import { useState } from 'react';
-import { db } from '../../services/firebase';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { setDoc, updateDoc, doc } from 'firebase/firestore';
+import { db, secondaryAuth } from '../../services/firebase';
 
 const initialState = {
 nombre: '',
-contraseña:'',
+contraseña: '',
 email: '',
 tipo: 'admin',
-esPrincipal: false, // por defecto no es principal
+esPrincipal: false,
 };
 
 export default function AdminForm({ adminEditando, setAdminEditando }) {
 const [admin, setAdmin] = useState(initialState);
 
-useState(() => {
+useEffect(() => {
     if (adminEditando) setAdmin(adminEditando);
 }, [adminEditando]);
 
@@ -31,21 +32,64 @@ const handleSubmit = async (e) => {
         await updateDoc(ref, admin);
         setAdminEditando(null);
     } else {
-        await addDoc(collection(db, 'usuarios'), admin);
+        const cred = await createUserWithEmailAndPassword(
+        secondaryAuth,
+        admin.email,
+        admin.contraseña
+        );
+
+        await sendEmailVerification(cred.user);
+
+        await setDoc(doc(db, 'usuarios', cred.user.uid), {
+        nombre: admin.nombre,
+        email: admin.email,
+        tipo: 'admin',
+        esPrincipal: admin.esPrincipal || false,
+        });
+
+        await secondaryAuth.signOut();
+        alert('✅ Admin creado. Revisa tu correo para verificar la cuenta.');
     }
+
     setAdmin(initialState);
     } catch (error) {
-    console.error('Error guardando admin:', error);
+    console.error('Error al registrar admin:', error.message);
+    alert('❌ Error: ' + error.message);
     }
 };
 
 return (
     <form onSubmit={handleSubmit}>
-    <input name="nombre" placeholder="Nombre" value={admin.nombre} onChange={handleChange} required />
-    <input name="email" placeholder="Email" value={admin.email} onChange={handleChange} required />
+    <input
+        name="nombre"
+        placeholder="Nombre"
+        value={admin.nombre}
+        onChange={handleChange}
+        required
+    />
+    <input
+        name="email"
+        placeholder="Email"
+        value={admin.email}
+        onChange={handleChange}
+        required
+    />
+    <input
+        type="password"
+        name="contraseña"
+        placeholder="Contraseña"
+        value={admin.contraseña}
+        onChange={handleChange}
+        required
+    />
     <label>
         ¿Es principal?
-        <input type="checkbox" name="esPrincipal" checked={admin.esPrincipal} onChange={handleChange} />
+        <input
+        type="checkbox"
+        name="esPrincipal"
+        checked={admin.esPrincipal}
+        onChange={handleChange}
+        />
     </label>
     <button type="submit">
         {adminEditando ? 'Actualizar Admin' : 'Agregar Admin'}

@@ -1,82 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from 'firebase/firestore';
-import { db } from '../firebase';
-import '../AdministradoresAdmin.css';
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import { registrarAdminConAuth } from "../../services/adminFirebase";
+import { getAdmins, deleteAdmin } from "../../services/userService"; // agrega esto
+import { useAuth } from "../../context/AuthContext";
 
-const UID_ADMIN_PRINCIPAL = 'uid-del-admin-principal'; // <-- reemplaza esto por el UID real
-
-const AdministradoresAdmin = () => {
+export default function AdminAdministradores() {
 const [admins, setAdmins] = useState([]);
-const [nuevoAdmin, setNuevoAdmin] = useState({ nombre: '', email: '', tipo: 'admin' });
-const [modoEdicion, setModoEdicion] = useState(false);
-const [idActual, setIdActual] = useState(null);
+const [formData, setFormData] = useState({ nombre: "", email: "", password: "" });
+const [showModal, setShowModal] = useState(false);
+const { userData } = useAuth();
 
-const obtenerAdmins = async () => {
-    const q = query(collection(db, "usuarios"), where("tipo", "==", "admin"));
-    const querySnapshot = await getDocs(q);
-    const lista = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setAdmins(lista);
+const cargarAdmins = async () => {
+    const data = await getAdmins(); // función Firestore que obtiene usuarios con tipo "admin"
+    setAdmins(data);
 };
 
-const manejarCambio = (e) => {
-    setNuevoAdmin({ ...nuevoAdmin, [e.target.name]: e.target.value });
-};
-
-const agregarAdmin = async () => {
-    if (!nuevoAdmin.nombre || !nuevoAdmin.email) return alert("Completa todos los campos.");
-    await addDoc(collection(db, "usuarios"), nuevoAdmin);
-    setNuevoAdmin({ nombre: '', email: '', tipo: 'admin' });
-    obtenerAdmins();
-};
-
-const editarAdmin = (admin) => {
-    setModoEdicion(true);
-    setNuevoAdmin({ nombre: admin.nombre, email: admin.email, tipo: 'admin' });
-    setIdActual(admin.id);
-};
-
-const actualizarAdmin = async () => {
-    if (!nuevoAdmin.nombre || !nuevoAdmin.email) return alert("Completa todos los campos.");
-    await updateDoc(doc(db, "usuarios", idActual), nuevoAdmin);
-    setNuevoAdmin({ nombre: '', email: '', tipo: 'admin' });
-    setModoEdicion(false);
-    setIdActual(null);
-    obtenerAdmins();
-};
-
-const eliminarAdmin = async (id) => {
-    if (id === UID_ADMIN_PRINCIPAL) {
-    alert("❌ No se puede eliminar al administrador principal.");
-    return;
+const guardar = async () => {
+    try {
+    await registrarAdminConAuth(formData);
+    setShowModal(false);
+    cargarAdmins();
+    } catch (error) {
+    Swal.fire("Error", error.message, "error");
     }
-    if (confirm("¿Eliminar este administrador?")) {
-    await deleteDoc(doc(db, "usuarios", id));
-    obtenerAdmins();
+};
+
+const eliminar = async (id) => {
+    const result = await Swal.fire({
+    title: "¿Eliminar administrador?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí",
+    });
+
+    if (result.isConfirmed) {
+    await deleteAdmin(id);
+    cargarAdmins();
     }
 };
 
 useEffect(() => {
-    obtenerAdmins();
+    if (userData?.tipo === "superadmin") cargarAdmins();
 }, []);
 
+if (userData?.tipo !== "superadmin") return <p>Acceso no autorizado</p>;
+
 return (
-    <div className="admins-admin">
-    <h2>Administradores</h2>
+    <div className="container mt-4">
+    <h3>Administradores</h3>
+    <button className="btn btn-primary" onClick={() => setShowModal(true)}>Nuevo Administrador</button>
 
-    <div className="formulario">
-        <input name="nombre" placeholder="Nombre" value={nuevoAdmin.nombre} onChange={manejarCambio} />
-        <input name="email" placeholder="Email" value={nuevoAdmin.email} onChange={manejarCambio} />
-        {!modoEdicion ? (
-        <button onClick={agregarAdmin}>Agregar</button>
-        ) : (
-        <button onClick={actualizarAdmin}>Actualizar</button>
-        )}
-    </div>
-
-    <table>
+    <table className="table mt-3">
         <thead>
         <tr>
-            <th>Nombre</th><th>Email</th><th>Acciones</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -85,17 +64,34 @@ return (
             <td>{admin.nombre}</td>
             <td>{admin.email}</td>
             <td>
-                <button onClick={() => editarAdmin(admin)}>Editar</button>
-                <button onClick={() => eliminarAdmin(admin.id)} disabled={admin.id === UID_ADMIN_PRINCIPAL}>
-                Eliminar
-                </button>
+                <button className="btn btn-danger btn-sm" onClick={() => eliminar(admin.id)}>Eliminar</button>
             </td>
             </tr>
         ))}
         </tbody>
     </table>
+
+    {showModal && (
+        <div className="modal d-block">
+        <div className="modal-dialog">
+            <div className="modal-content">
+            <div className="modal-header"><h5>Nuevo Administrador</h5></div>
+            <div className="modal-body">
+                <input className="form-control mb-2" placeholder="Nombre"
+                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} />
+                <input className="form-control mb-2" placeholder="Email"
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                <input className="form-control mb-2" placeholder="Contraseña" type="password"
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+            </div>
+            <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+                <button className="btn btn-success" onClick={guardar}>Guardar</button>
+            </div>
+            </div>
+        </div>
+        </div>
+    )}
     </div>
 );
-};
-
-export default AdministradoresAdmin;
+}

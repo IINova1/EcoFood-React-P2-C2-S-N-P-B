@@ -1,10 +1,10 @@
 // src/pages/admin/EmpresasAdmin.jsx
 import { useEffect, useState } from 'react';
-import { db } from '../../firebase/config';
+import { db } from "../../services/firebase";
 import {
 collection, getDocs, addDoc, updateDoc, deleteDoc, doc
 } from 'firebase/firestore';
-import '../EmpresasAdmin.css'; // después lo creamos
+ // después lo creamos
 
 export default function EmpresasAdmin() {
 const [empresas, setEmpresas] = useState([]);
@@ -31,10 +31,10 @@ const handleChange = e => {
 const handleSubmit = async e => {
     e.preventDefault();
     if (editId) {
-    const docRef = doc(db, 'empresas', editId);
-    await updateDoc(docRef, form);
+        const docRef = doc(db, 'empresas', editId);
+        await updateDoc(docRef, form);
     } else {
-    await addDoc(empresasRef, form);
+        await addDoc(empresasRef, form);
     }
     setForm({ nombre: '', rut: '', direccion: '', comuna: '', email: '', telefono: '' });
     setEditId(null);

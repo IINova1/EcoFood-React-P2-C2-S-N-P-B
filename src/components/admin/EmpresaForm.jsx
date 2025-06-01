@@ -1,10 +1,8 @@
 // src/components/admin/EmpresaForm.jsx
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc, addDoc, collection, updateDoc } from 'firebase/firestore';
-import { db, auth } from '../../services/firebase'; // <-- Agrega este import
-
+import { db, secondaryAuth } from '../../services/firebase';
 
 const initialState = {
 nombre: '',
@@ -13,14 +11,14 @@ direccion: '',
 comuna: '',
 email: '',
 telefono: '',
+password: '',
 };
 
 export default function EmpresaForm({ empresaEditando, setEmpresaEditando }) {
 const [empresa, setEmpresa] = useState(initialState);
-const [mensaje, setMensaje] = useState(''); // <-- Agrega esta línea
+const [mensaje, setMensaje] = useState('');
 
-  // Si hay una empresa para editar, se carga en el formulario
-useState(() => {
+useEffect(() => {
     if (empresaEditando) {
     setEmpresa(empresaEditando);
     }
@@ -40,42 +38,39 @@ const handleSubmit = async (e) => {
         await updateDoc(empresaRef, empresa);
         setEmpresaEditando(null);
     } else {
+        // Guardar en colección de empresas (opcional)
         await addDoc(collection(db, 'empresas'), empresa);
+
+        // Registrar en Firebase Auth con secondaryAuth
+        const cred = await createUserWithEmailAndPassword(
+        secondaryAuth,
+        empresa.email,
+        empresa.password
+        );
+
+        await sendEmailVerification(cred.user);
+
+        // Guardar usuario con tipo "empresa" en Firestore
+        await setDoc(doc(db, 'usuarios', cred.user.uid), {
+        nombre: empresa.nombre,
+        rut: empresa.rut,
+        direccion: empresa.direccion,
+        comuna: empresa.comuna,
+        email: empresa.email,
+        telefono: empresa.telefono || '',
+        tipo: 'empresa',
+        });
+
+        await secondaryAuth.signOut(); // Cierra sesión secundaria
+        setMensaje('✅ Empresa registrada. Revisa tu correo para verificar la cuenta.');
     }
 
-    try {
-    const userCred = await createUserWithEmailAndPassword(auth, form.email, form.password);
-    await sendEmailVerification(userCred.user);
-
-    await setDoc(doc(db, 'usuarios', userCred.user.uid), {
-        nombre: form.nombre,
-        rut: form.rut,
-        direccion: form.direccion,
-        comuna: form.comuna,
-        email: form.email,
-        telefono: form.telefono || '',
-        tipo: 'empresa' // ⚠ importante: registrar como cliente
-    });
-
-    setMensaje('✅ Registro exitoso. Verifica tu correo antes de iniciar sesión.');
-    } catch (error) {
-    setMensaje(`❌ Error: ${error.message}`);
-    }
-
-    
     setEmpresa(initialState);
     } catch (error) {
     console.error('Error al guardar empresa:', error);
+    setMensaje(`❌ Error: ${error.message}`);
     }
 };
-
-<form onSubmit={handleSubmit}>
-    {/* ...inputs... */}
-    <button type="submit">
-        {empresaEditando ? 'Actualizar Empresa' : 'Agregar Empresa'}
-    </button>
-    <p className="mt-3 text-info">{mensaje}</p> {/* Muestra el mensaje */}
-</form>
 
 return (
     <form onSubmit={handleSubmit}>
@@ -85,10 +80,13 @@ return (
     <input name="comuna" placeholder="Comuna" value={empresa.comuna} onChange={handleChange} required />
     <input type="email" name="email" placeholder="Email" value={empresa.email} onChange={handleChange} required />
     <input name="telefono" placeholder="Teléfono" value={empresa.telefono} onChange={handleChange} required />
+    <input type="password" name="password" placeholder="Contraseña" value={empresa.password} onChange={handleChange} required />
 
     <button type="submit">
         {empresaEditando ? 'Actualizar Empresa' : 'Agregar Empresa'}
     </button>
+
+    {mensaje && <p className="mt-3 text-info">{mensaje}</p>}
     </form>
 );
 }
