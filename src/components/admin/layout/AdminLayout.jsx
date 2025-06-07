@@ -10,27 +10,24 @@ export default function AdminLayout() {
   }, []);
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-green-700 text-white p-6 flex flex-col justify-between">
-        <div>
-          <h1 className="text-2xl font-bold mb-6">EcoFood Admin</h1>
-          <nav className="flex flex-col gap-4">
-            <Link to="/admin/clientes" className="hover:text-gray-200">📋 Clientes</Link>
-            <Link to="/admin/empresas" className="hover:text-gray-200">🏢 Empresas</Link>
-            <Link to="/admin/registro" className="hover:text-gray-200">🧑‍💼 Registrar Admin</Link>
-          </nav>
-        </div>
+    <div className="admin-layout">
+      {/* Barra superior horizontal fija */}
+      <header className="admin-topbar">
+        <h1 className="admin-topbar-title">EcoFood Admin</h1>
+        <nav className="admin-topbar-nav">
+          <Link to="/admin/clientes" className="admin-topbar-link">📋 Clientes</Link>
+          <Link to="/admin/empresas" className="admin-topbar-link">🏢 Empresas</Link>
+          <Link to="/admin/registro" className="admin-topbar-link">🧑‍💼 Registrar Admin</Link>
+        </nav>
         <button
           onClick={logout}
-          className="bg-red-600 hover:bg-red-700 mt-4 py-2 px-4 rounded"
+          className="admin-topbar-logout"
         >
           Cerrar Sesión
         </button>
-      </aside>
-
+      </header>
       {/* Contenido principal */}
-      <main className="flex-1 overflow-y-auto p-6 bg-gray-100">
+      <main className="admin-main-content">
         <Outlet />
       </main>
     </div>
