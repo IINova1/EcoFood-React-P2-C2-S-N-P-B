@@ -1,17 +1,18 @@
-// src/routes/ProtectedByRole.jsx
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function ProtectedByRole({ allowed, requirePrincipal = false, children }) {
-const { userData, loading } = useAuth();
+const { user, rol, cargando } = useAuth();
 
-if (loading) return <p>Cargando...</p>;
+if (cargando) return <p>Cargando...</p>;
 
-if (!userData || !allowed.includes(userData.tipo)) {
+  // Si no hay usuario o el rol no está permitido
+if (!user || !allowed.includes(rol)) {
     return <Navigate to="/login" />;
 }
 
-if (requirePrincipal && !userData.esPrincipal) {
+  // Si se requiere admin principal y no lo es
+if (requirePrincipal && !user.esPrincipal) {
     return <p>No autorizado: se requiere administrador principal.</p>;
 }
 

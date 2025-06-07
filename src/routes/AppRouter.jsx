@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Layout
 import AdminLayout from '../components/admin/layout/AdminLayout';
+import ProtectedRoute from '../routes/ProtectedRoute'; // Asegúrate de importar esto
 
 // Páginas públicas
 import Home from '../pages/home';
@@ -16,28 +17,53 @@ import DashboardAdmin from '../pages/admin/DashboardAdmin';
 import EmpresasAdmin from '../pages/admin/EmpresasAdmin';
 import ClientesAdmin from '../pages/admin/ClientesAdmin';
 import AdministradoresAdmin from '../pages/admin/AdministradoresAdmin';
-import Administracion from '../pages/Administracion'; // nuevo componente
+import Administracion from '../pages/Administracion';
+import ListaClientes from "../pages/admin/clientes/ListaClientes";
+import FormularioCliente from "../pages/admin/clientes/FormularioCliente";
 
 export default function AppRouter() {
   return (
-      <Routes>
-        {/* Rutas públicas */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Register />} />
-        <Route path="/registro/empresa" element={<RegistroEmpresa />} />
-        <Route path="/registro/admin" element={<RegistroAdmin />} />
-        <Route path="/recuperar" element={<Recuperar />} />
+    <Routes>
 
-        {/* Rutas admin anidadas dentro de AdminLayout */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<DashboardAdmin />} />
-          <Route path="dashboard" element={<DashboardAdmin />} />
-          <Route path="empresas" element={<EmpresasAdmin />} />
-          <Route path="clientes" element={<ClientesAdmin />} />
-          <Route path="administradores" element={<AdministradoresAdmin />} />
-          <Route path="administracion" element={<Administracion />} />
-        </Route>
-      </Routes>
+      {/* RUTAS PÚBLICAS */}
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/registro" element={<Register />} />
+      <Route path="/recuperar" element={<Recuperar />} />
+
+      {/* RUTAS DE REGISTRO DE ADMIN Y EMPRESA → AHORA PROTEGIDAS */}
+      <Route path="/registro/admin" element={
+        <ProtectedRoute>
+          <RegistroAdmin />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/registro/empresa" element={
+        <ProtectedRoute>
+          <RegistroEmpresa />
+        </ProtectedRoute>
+      } />
+
+      {/* RUTAS ADMIN TODAS DENTRO DE PROTECTED ROUTE Y ADMINLAYOUT */}
+      <Route path="/admin" element={
+        <ProtectedRoute>
+          <AdminLayout />
+        </ProtectedRoute>
+      }>
+        <Route index element={<DashboardAdmin />} />
+        <Route path="dashboard" element={<DashboardAdmin />} />
+        <Route path="empresas" element={<EmpresasAdmin />} />
+        <Route path="clientes" element={<ClientesAdmin />} />
+        <Route path="administradores" element={<AdministradoresAdmin />} />
+        <Route path="administracion" element={<Administracion />} />
+        <Route path="registro" element={<RegistroAdmin />} /> {/* <-- AGREGA ESTA LÍNEA */}
+
+        {/* CRUD CLIENTES */}
+        <Route path="clientes" element={<ListaClientes />} />
+        <Route path="clientes/nuevo" element={<FormularioCliente />} />
+        <Route path="clientes/editar/:id" element={<FormularioCliente />} />
+      </Route>
+
+    </Routes>
   );
 }

@@ -7,7 +7,12 @@ import { db } from '../../services/firebase';
 
 export default function AdministracionPrincipal() {
 const [admins, setAdmins] = useState([]);
-const [formData, setFormData] = useState({ nombre: '', email: '', password: '', id: null });
+const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    password: '',
+    id: null
+});
 const [modoEdicion, setModoEdicion] = useState(false);
 
 const cargarAdmins = async () => {
@@ -15,8 +20,23 @@ const cargarAdmins = async () => {
     setAdmins(data);
 };
 
+const esContraseñaRobusta = (password) => {
+    const regex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return regex.test(password);
+};
+
 const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validaciones
+    if (!modoEdicion && !esContraseñaRobusta(formData.password)) {
+    return Swal.fire(
+        'Contraseña débil',
+        'Debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.',
+        'error'
+    );
+    }
 
     try {
     if (modoEdicion) {
@@ -41,19 +61,29 @@ const handleSubmit = async (e) => {
 
 const eliminar = async (id) => {
     const result = await Swal.fire({
-    title: "¿Eliminar administrador?",
-    icon: "warning",
+    title: '¿Eliminar administrador?',
+    icon: 'warning',
     showCancelButton: true,
-    confirmButtonText: "Sí"
+    confirmButtonText: 'Sí'
     });
     if (result.isConfirmed) {
-    await deleteAdmin(id);
-    cargarAdmins();
+    try {
+        await deleteAdmin(id);
+        Swal.fire('Eliminado', 'Administrador eliminado correctamente', 'success');
+        cargarAdmins();
+    } catch (error) {
+        Swal.fire('Error', 'No se pudo eliminar', 'error');
+    }
     }
 };
 
 const editar = (admin) => {
-    setFormData({ nombre: admin.nombre, email: admin.email, password: '', id: admin.id });
+    setFormData({
+    nombre: admin.nombre,
+    email: admin.email,
+    password: '',
+    id: admin.id
+    });
     setModoEdicion(true);
 };
 
@@ -66,28 +96,43 @@ return (
     <h2>Administración Principal</h2>
 
     <form onSubmit={handleSubmit} className="mb-4">
-        <input className="form-control mb-2" placeholder="Nombre"
+        <input
+        className="form-control mb-2"
+        placeholder="Nombre"
         value={formData.nombre}
         onChange={e => setFormData({ ...formData, nombre: e.target.value })}
-        required />
-        <input className="form-control mb-2" placeholder="Email"
+        required
+        />
+        <input
+        className="form-control mb-2"
+        placeholder="Email"
+        type="email"
         value={formData.email}
         onChange={e => setFormData({ ...formData, email: e.target.value })}
-        required />
+        required
+        />
         {!modoEdicion && (
-        <input className="form-control mb-2" type="password" placeholder="Contraseña"
+        <input
+            className="form-control mb-2"
+            type="password"
+            placeholder="Contraseña"
             value={formData.password}
             onChange={e => setFormData({ ...formData, password: e.target.value })}
-            required />
+            required
+        />
         )}
         <button className="btn btn-primary">
         {modoEdicion ? 'Actualizar Admin' : 'Registrar Admin'}
         </button>
         {modoEdicion && (
-        <button className="btn btn-secondary ms-2" onClick={() => {
+        <button
+            type="button"
+            className="btn btn-secondary ms-2"
+            onClick={() => {
             setModoEdicion(false);
             setFormData({ nombre: '', email: '', password: '', id: null });
-        }}>
+            }}
+        >
             Cancelar
         </button>
         )}
@@ -103,8 +148,18 @@ return (
             <td>{admin.nombre}</td>
             <td>{admin.email}</td>
             <td>
-                <button className="btn btn-warning btn-sm me-2" onClick={() => editar(admin)}>Editar</button>
-                <button className="btn btn-danger btn-sm" onClick={() => eliminar(admin.id)}>Eliminar</button>
+                <button
+                className="btn btn-warning btn-sm me-2"
+                onClick={() => editar(admin)}
+                >
+                Editar
+                </button>
+                <button
+                className="btn btn-danger btn-sm"
+                onClick={() => eliminar(admin.id)}
+                >
+                Eliminar
+                </button>
             </td>
             </tr>
         ))}
