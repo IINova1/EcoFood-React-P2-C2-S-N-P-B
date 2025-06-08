@@ -66,18 +66,16 @@ export default function Administracion() {
                   <td>{admin.email}</td>
                   <td>{admin.esPrincipal ? 'Sí' : 'No'}</td>
                   <td>
-                    {!admin.esPrincipal && (
-                      <button
-                        className="btn-danger"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleDelete(admin.id);
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    )}
-                  </td>
+                    <button
+                      className="btn-danger"
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleDelete(admin.id);
+                      }}
+                    >
+                      Eliminar
+                    </button>
+                </td>
                 </tr>
               ))}
             </tbody>

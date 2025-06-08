@@ -1,40 +1,27 @@
-import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { auth, db } from '../services/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext';
 
-function ProtectedRoute({ children }) {
-const [cargando, setCargando] = useState(true);
-const [autorizado, setAutorizado] = useState(false);
+/**
+ * @param {JSX.Element} children - El contenido protegido
+ * @param {string|string[]=} requiredRole - El rol o roles permitidos (opcional)
+ */
+export default function ProtectedRoute({ children, requiredRole }) {
+const { user, rol, cargando } = useAuth();
 
-useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-    if (user && user.emailVerified) {
-        try {
-        const docRef = doc(db, 'usuarios', user.uid);
-        const docSnap = await getDoc(docRef);
+if (cargando) {
+    return <p className="text-center mt-10">Cargando sesión...</p>;
+}
 
-        if (docSnap.exists()) {
-            const datos = docSnap.data();
-            if (datos.rol === 'admin') {
-            setAutorizado(true);
-            }
-        }
-        } catch (error) {
-        console.error("Error verificando el rol:", error);
-        }
+if (!user) {
+    return <Navigate to="/login" />;
+}
+
+if (requiredRole) {
+    const rolesPermitidos = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
+    if (!rolesPermitidos.includes(rol)) {
+    return <Navigate to="/no-autorizado" />;
     }
-    setCargando(false);
-    });
-
-    return () => unsubscribe();
-}, []);
-
-if (cargando) return <p>Cargando...</p>;
-
-if (!autorizado) return <Navigate to="/login" />;
+}
 
 return children;
 }
-
-export default ProtectedRoute;

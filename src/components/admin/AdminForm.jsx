@@ -1,6 +1,5 @@
-// src/components/admin/AdminForm.jsx
 import { useState, useEffect } from 'react';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import {createUserWithEmailAndPassword,sendEmailVerification,} from 'firebase/auth';
 import { setDoc, updateDoc, doc } from 'firebase/firestore';
 import { db, secondaryAuth } from '../../services/firebase';
 
@@ -24,9 +23,21 @@ const handleChange = (e) => {
     setAdmin({ ...admin, [name]: type === 'checkbox' ? checked : value });
 };
 
+const esContraseñaRobusta = (password) => {
+    const regex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?]).{8,}$/;
+    return regex.test(password);
+};
+
 const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+    if (!adminEditando && !esContraseñaRobusta(admin.contraseña)) {
+        return alert(
+        '❌ La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.'
+        );
+    }
+
     if (adminEditando) {
         const ref = doc(db, 'usuarios', adminEditando.id);
         await updateDoc(ref, admin);
@@ -70,6 +81,7 @@ return (
     <input
         name="email"
         placeholder="Email"
+        type="email"
         value={admin.email}
         onChange={handleChange}
         required
