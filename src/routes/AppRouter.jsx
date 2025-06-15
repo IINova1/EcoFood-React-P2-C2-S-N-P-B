@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from "../routes/ProtectedRoute";
 
 // Layout
 import AdminLayout from '../components/admin/layout/AdminLayout';
-import ProtectedRoute from '../routes/ProtectedRoute'; // Asegúrate de importar esto
 
-// Páginas públicas
+// Contexto y páginas públicas
 import Home from '../pages/home';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
@@ -21,49 +21,46 @@ import Administracion from '../pages/Administracion';
 import ListaClientes from "../pages/admin/clientes/ListaClientes";
 import FormularioCliente from "../pages/admin/clientes/FormularioCliente";
 
+// ✅ Nuevas páginas empresa
+import PerfilEmpresa from '../pages/empresa/PerfilEmpresa';
+import ProductosEmpresa from '../pages/empresa/ProductosEmpresa';
+
 export default function AppRouter() {
   return (
     <Routes>
-
-      {/* RUTAS PÚBLICAS */}
+      {/* Rutas públicas */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/registro" element={<Register />} />
+      <Route path="/registro/empresa" element={<RegistroEmpresa />} />
+      <Route path="/registro/admin" element={<RegistroAdmin />} />
       <Route path="/recuperar" element={<Recuperar />} />
 
-      {/* RUTAS DE REGISTRO DE ADMIN Y EMPRESA → AHORA PROTEGIDAS */}
-      <Route path="/registro/admin" element={
-        <ProtectedRoute>
-          <RegistroAdmin />
+      {/* Rutas protegidas EMPRESA */}
+      <Route path="/empresa/perfil" element={
+        <ProtectedRoute role="empresa">
+          <PerfilEmpresa />
         </ProtectedRoute>
       } />
 
-      <Route path="/registro/empresa" element={
-        <ProtectedRoute>
-          <RegistroEmpresa />
+      <Route path="/empresa/productos" element={
+        <ProtectedRoute role="empresa">
+          <ProductosEmpresa />
         </ProtectedRoute>
       } />
 
-      {/* RUTAS ADMIN TODAS DENTRO DE PROTECTED ROUTE Y ADMINLAYOUT */}
-      <Route path="/admin" element={
-        <ProtectedRoute>
-          <AdminLayout />
-        </ProtectedRoute>
-      }>
+      {/* Rutas protegidas ADMIN */}
+      <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<DashboardAdmin />} />
         <Route path="dashboard" element={<DashboardAdmin />} />
         <Route path="empresas" element={<EmpresasAdmin />} />
         <Route path="clientes" element={<ClientesAdmin />} />
         <Route path="administradores" element={<AdministradoresAdmin />} />
         <Route path="administracion" element={<Administracion />} />
-        <Route path="registro" element={<RegistroAdmin />} /> {/* <-- AGREGA ESTA LÍNEA */}
-
-        {/* CRUD CLIENTES */}
-        <Route path="clientes" element={<ListaClientes />} />
-        <Route path="clientes/nuevo" element={<FormularioCliente />} />
-        <Route path="clientes/editar/:id" element={<FormularioCliente />} />
+        <Route path="clientes" element={<ProtectedRoute role="admin"><ListaClientes /></ProtectedRoute>} />
+        <Route path="clientes/nuevo" element={<ProtectedRoute role="admin"><FormularioCliente /></ProtectedRoute>} />
+        <Route path="clientes/editar/:id" element={<ProtectedRoute role="admin"><FormularioCliente /></ProtectedRoute>} />
       </Route>
-
     </Routes>
   );
 }
