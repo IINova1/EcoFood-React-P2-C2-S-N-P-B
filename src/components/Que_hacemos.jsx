@@ -1,3 +1,5 @@
+
+import './somos.css';
 import React, { useState } from "react";
 
 const cartasData = [
