@@ -6,10 +6,6 @@ html{
     scroll-behavior: smooth;
 }
 
-
-
-
-
 body{
     font-family: "Noto Sans", "FontAwesome", sans-serif;
     background-color: #f7f7f7;
@@ -140,25 +136,6 @@ header a:hover{
 }
 
 
-#hero {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    flex-direction: column;
-    height: 90vh;
-    color: white;
-    background-image: linear-gradient(
-        0deg,
-        rgba(0,0,0,0.5),
-        rgba(0,0,0,0.5)
-    ),
-    url('img/flat-lay-green-fruits-vegetables.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center; 
-    }
-
 
 #somos-ecofood{
         text-align: center;
@@ -253,7 +230,7 @@ header a:hover{
         rgba(0,0,0,0.5),
         rgba(0,0,0,0.5)
     ),
-    url('img/educacion-alimentacion-servicios-nodrit.jpg');
+    url('/src/assets/img/que-hacemos.jpg');
 
 }
 
@@ -420,22 +397,7 @@ header a:hover{
     
 
 
-    #somos-ecofood .img-container{display: flex;
-        border-radius: 50px;
-        border: 2px solid black;
-        align-items: left;
-        justify-content: left;
-        text-align: left;
-        flex-direction: column;
-        height: 80vh;
-        width: 400vh;
-        color: white;
-        background-image:
-        url('img/Quienes-somos.png');
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center center; 
-        }
+
 
     
     
