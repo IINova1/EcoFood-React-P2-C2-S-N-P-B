@@ -1,3 +1,5 @@
+import '../assets/img/css/somos.css';
+
 function SomosEcofood() {
     return (
         <section id="somos-ecofood">

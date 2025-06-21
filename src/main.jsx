@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './context/AuthProvider'; // O la ruta correcta
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../src/assets/img/css/styles.css';
+
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
