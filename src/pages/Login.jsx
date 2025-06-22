@@ -33,7 +33,7 @@ function Login() {
         } else if (datos.tipo === 'admin') {
           navigate('/admin/dashboard');
         } else if (datos.tipo === 'cliente') {
-          navigate('/cliente/dashboard');
+          navigate('/cliente/home');
         } else if (datos.tipo === 'empresa') {
           navigate('/empresa/perfil');
         } else {
