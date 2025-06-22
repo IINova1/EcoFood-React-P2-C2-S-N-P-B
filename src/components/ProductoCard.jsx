@@ -28,13 +28,19 @@ export default function ProductoCard({ producto, recargar }) {
 
         if (confirm.isConfirmed) {
             try {
+                // --- INICIO DE LA CORRECCIÓN ---
+                // Se añaden los campos faltantes para que el pedido se guarde correctamente
                 await crearPedido({
                     productoId: producto.id,
+                    productoNombre: producto.nombre,
+                    empresaId: producto.empresaId,
+                    empresaNombre: producto.empresaNombre,
                     clienteId: user.uid,
                     cantidad: cantidad,
                     estado: "pendiente",
                     fecha: new Date(),
                 });
+                // --- FIN DE LA CORRECCIÓN ---
                 Swal.fire("✅ Solicitud enviada", "", "success");
                 if (recargar) recargar();
             } catch (error) {
