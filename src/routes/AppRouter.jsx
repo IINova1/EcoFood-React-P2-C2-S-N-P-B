@@ -24,6 +24,7 @@ import FormularioCliente from '../pages/admin/clientes/FormularioCliente';
 // Páginas empresa
 import PerfilEmpresa from '../pages/empresa/PerfilEmpresa';
 import ProductosEmpresa from '../pages/empresa/ProductosEmpresa';
+import SolicitudesEmpresa from '../pages/empresa/SolicitudesEmpresa';
 
 // Páginas cliente
 import HomeCliente from '../pages/cliente/HomeCliente';
@@ -71,6 +72,11 @@ export default function AppRouter() {
       <Route path="/empresa/productos" element={
         <ProtectedRoute tipoPermitido="empresa">
           <ProductosEmpresa />
+        </ProtectedRoute>
+      } />
+      <Route path="/empresa/solicitudes" element={
+        <ProtectedRoute tipoPermitido="empresa">
+          <SolicitudesEmpresa />
         </ProtectedRoute>
       } />
 

@@ -4,7 +4,7 @@ import Home from './pages/home';
 import Login from './pages/Login';
 import RegistroEmpresa from './pages/RegistroEmpresa';
 import RegistroAdmin from './pages/RegistroAdmin';
-
+import SolicitudesEmpresa from './pages/empresa/SolicitudesEmpresa';
 function AppRouter() {
   return (
 <Routes>
