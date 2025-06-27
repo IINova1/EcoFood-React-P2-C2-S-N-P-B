@@ -1,81 +1,99 @@
+// src/pages/Login.jsx
 import { useState } from 'react';
 import { auth, db } from '../services/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getDoc, doc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-import './login.css';
+import { useNavigate, Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-function Login() {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async e => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
 
       if (!userCred.user.emailVerified) {
-        setError('Debes verificar tu correo antes de iniciar sesión.');
+        Swal.fire('Verificación Requerida', 'Debes verificar tu correo electrónico antes de iniciar sesión.', 'warning');
+        setLoading(false);
         return;
       }
 
-      // Buscar datos del usuario en Firestore
       const ref = doc(db, 'usuarios', userCred.user.uid);
       const snap = await getDoc(ref);
 
       if (snap.exists()) {
         const datos = snap.data();
-
-        if (datos.tipo === 'admin' && datos.esPrincipal) {
-          navigate('/admin/administracion');
-        } else if (datos.tipo === 'admin') {
-          navigate('/admin/dashboard');
-        } else if (datos.tipo === 'cliente') {
-          navigate('/cliente/home');
-        } else if (datos.tipo === 'empresa') {
-          navigate('/empresa/perfil');
-        } else {
-          setError('No tienes permisos para acceder.');
+        switch(datos.tipo) {
+            case 'admin':
+                navigate('/admin/dashboard');
+                break;
+            case 'cliente':
+                navigate('/cliente/home');
+                break;
+            case 'empresa':
+                navigate('/empresa/perfil');
+                break;
+            default:
+                Swal.fire('Acceso Denegado', 'No tienes un rol asignado para acceder.', 'error');
         }
       } else {
-        setError('Tu cuenta no está registrada correctamente en Firestore.');
+        Swal.fire('Error de Cuenta', 'Tu cuenta no está registrada correctamente. Contacta a soporte.', 'error');
       }
 
     } catch (err) {
-      console.error(err);
-      setError('Credenciales inválidas o error de conexión.');
+      Swal.fire('Error de Autenticación', 'Las credenciales son inválidas o hubo un error de conexión.', 'error');
+    } finally {
+        setLoading(false);
     }
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          className="form-control mb-2"
-          type="email"
-          placeholder="Correo"
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="form-control mb-2"
-          type="password"
-          placeholder="Contraseña"
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
-        <button className="btn btn-success">Ingresar</button>
-      </form>
-      <p className="text-danger mt-3">{error}</p>
-      <div className="login-links mt-3" style={{ textAlign: "center" }}>
-        <a href="/registro" className="me-3">¿No tienes cuenta? Regístrate</a>
-        <a href="/recuperar">¿Olvidaste tu contraseña?</a>
+    <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
+      <div className="card shadow-sm" style={{ width: '400px' }}>
+        <div className="card-body p-4">
+          <h2 className="card-title text-center mb-4">Iniciar Sesión en EcoFood</h2>
+          <form onSubmit={handleLogin}>
+            <div className="form-floating mb-3">
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                placeholder="Correo electrónico"
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
+              <label htmlFor="email">Correo electrónico</label>
+            </div>
+            <div className="form-floating mb-3">
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                placeholder="Contraseña"
+                onChange={e => setPassword(e.target.value)}
+                required
+              />
+              <label htmlFor="password">Contraseña</label>
+            </div>
+            <button className="btn btn-primary w-100 py-2" type="submit" disabled={loading}>
+              {loading ? 'Ingresando...' : 'Ingresar'}
+            </button>
+          </form>
+          <div className="text-center mt-3">
+            <Link to="/recuperar">¿Olvidaste tu contraseña?</Link>
+          </div>
+          <hr />
+          <div className="text-center">
+            <p>¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link></p>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
-
-export default Login;
