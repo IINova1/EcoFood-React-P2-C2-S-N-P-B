@@ -1,15 +1,17 @@
-// /src/pages/cliente/EditarPerfil.jsx
 import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../context/AuthContext";
 import { db } from "../../services/firebase";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { updatePassword } from "firebase/auth";
 
 export default function EditarPerfil() {
     const { user } = useAuth();
     const [datos, setDatos] = useState(null);
     const [editando, setEditando] = useState(false);
+    const [nuevaPassword, setNuevaPassword] = useState("");
+    const [confirmarPassword, setConfirmarPassword] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,13 +31,32 @@ export default function EditarPerfil() {
     const guardar = async () => {
         try {
             const ref = doc(db, "usuarios", user.uid);
+
             await updateDoc(ref, {
                 nombre: datos.nombre,
                 telefono: datos.telefono,
                 direccion: datos.direccion,
             });
-            Swal.fire("✅ Perfil actualizado", "", "success");
+
+            // Cambiar contraseña si fue ingresada y coincide
+            if (nuevaPassword || confirmarPassword) {
+                if (nuevaPassword !== confirmarPassword) {
+                    Swal.fire("⚠️ Contraseñas no coinciden", "", "warning");
+                    return;
+                }
+                if (nuevaPassword.length < 6) {
+                    Swal.fire("⚠️ La contraseña debe tener al menos 6 caracteres", "", "warning");
+                    return;
+                }
+                await updatePassword(user, nuevaPassword);
+                Swal.fire("✅ Perfil y contraseña actualizados", "", "success");
+            } else {
+                Swal.fire("✅ Perfil actualizado", "", "success");
+            }
+
             setEditando(false);
+            setNuevaPassword("");
+            setConfirmarPassword("");
         } catch (error) {
             Swal.fire("❌ Error", error.message, "error");
         }
@@ -65,6 +86,29 @@ export default function EditarPerfil() {
                 <label>Dirección:</label>
                 <input className="form-control" name="direccion" value={datos.direccion} onChange={handleChange} disabled={!editando} />
             </div>
+
+            {editando && (
+                <>
+                    <div className="mb-3">
+                        <label>Nueva Contraseña:</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            value={nuevaPassword}
+                            onChange={e => setNuevaPassword(e.target.value)}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label>Confirmar Contraseña:</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            value={confirmarPassword}
+                            onChange={e => setConfirmarPassword(e.target.value)}
+                        />
+                    </div>
+                </>
+            )}
 
             {!editando ? (
                 <button className="btn btn-primary" onClick={() => setEditando(true)}>Editar</button>
